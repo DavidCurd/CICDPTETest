@@ -1,0 +1,5 @@
+*.zip
+launch.json
+rad.json
+Translations/*.g.xlf
+.alpackages/*.app
