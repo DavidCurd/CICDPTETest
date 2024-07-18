@@ -1,0 +1,53 @@
+name: $(Build.BuildId)
+
+pool:
+ vmimage: windows-latest
+
+variables:
+  - group: 'BC-SaaS-Config'
+  - name: BCenvironment
+    ${{ if eq( variables['Build.SourceBranchName'], 'dev' ) }}: 
+      value: $[variables.DevBCEnvironment]
+    ${{ if eq( variables['Build.SourceBranchName'], 'test' ) }}: 
+      value: $[variables.TestBCEnvironment]
+    ${{ if eq( variables['Build.SourceBranchName'], 'master' ) }}: 
+      value: $[variables.LiveBCEnvironment]
+  - name: 'vazure_tenant_id'
+    value: $[variables.azure_tenant_id]
+  - name: 'vazure_client_id'
+    value: $[variables.azure_client_i]
+  - name: 'vazure_client_secret'
+    value: $[variables.azure_client_secret]
+
+jobs:
+- deployment: publish_to_saas
+  displayName: 'publishtosaas'
+  environment: Devops-Publish
+  strategy:
+    runOnce:    #rolling, canary are the other strategies that are supported
+      deploy:
+        steps:
+        - checkout: self
+          clean: true 
+
+
+        - task: ALOpsExtensionAPI@1  # Gets information on which extensions are installed on a given tenant
+          displayName: 'ALOps Extension API - Get currently installed extensions'
+          inputs:
+            interaction: get
+            api_endpoint: 'https://api.businesscentral.dynamics.com/v2.0/$(vazure_tenant_id)/$(BCenvironment)/api'
+            azure_tenant_id: '$(vazure_tenant_id)'
+            azure_app_client_id: '$(vazure_client_id)'
+            azure_app_client_secret: 'vazure_client_secret'
+            showdeploymentstatus: false
+
+        - task: ALOpsExtensionAPI@1  # Publishes 1 app (the first one in your filter)
+          displayName: 'ALOps Extension API - Publish - AutomationAPI'
+          inputs:
+            interaction: publish
+            api_endpoint: 'https://api.businesscentral.dynamics.com/v2.0/$(vazure_tenant_id)/$(BCenvironment)/api'
+            azure_tenant_id: '$(vazure_tenant_id)'
+            azure_app_client_id: '$(vazure_client_id)'
+            azure_app_client_secret: 'vazure_client_secret'
+            artifact_path: '*.app'
+            showdeploymentstatus: false
