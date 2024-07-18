@@ -1,0 +1,27 @@
+{
+  "id": "8543de95-880e-46a2-8420-dbc097583d16",
+  "name": "ALOps Test AppId",
+  "publisher": "Dynamics Consultants Ltd.",
+  "version": "24.0.0.0",
+  "brief": "App for Testing ALOps",
+  "description": "App for Testing ALOps",
+  "privacyStatement": "",
+  "EULA": "",
+  "help": "",
+  "url": "",
+  "logo": "",
+  "dependencies": [],
+  "screenshots": [],
+  "platform": "24.0.0.0",
+  "application": "24.0.0.0",
+  "idRanges": [
+    {
+      "from": 5000,
+      "to": 50149
+    }
+  ],
+  "contextSensitiveHelpUrl": "https://BaseALApp.com/help/",
+  "runtime": "13.0",
+  "features": ["TranslationFile"],
+  "target": "Cloud"
+}
